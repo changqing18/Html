@@ -1,0 +1,34 @@
+table{
+    border-collapse:collapse;
+    width:600px;
+    margin: auto;
+}
+th,td{
+    border:none;
+}
+th{
+    background-color: #000;
+    color:#fff;
+}
+body{
+    font-family: Arial;
+}
+tr:nth-of-type(even){
+    background-color: #f3f3f3;
+}
+tr:nth-of-type(odd){
+    background-color: #ddd;
+}
+td:nth-child(n+2),th:nth-child(n+2){
+    text-align: right;
+}
+tr:last-child,td:last-child {
+    font-weight: bolder;
+}
+
+tr:last-child td:last-child{
+    font-size:24px;
+}
+tr:nth-last-child(-n+3){
+    color:green;
+}
