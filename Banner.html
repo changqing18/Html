@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Banner</title>
+    <style type="text/css">
+        body{padding:40px;}
+        #conference{
+            background:#000 url(images/awesomeconf.jpg) center;
+            height:240px;
+            width:960px;
+        }
+        #badge{
+            border:2px solid blue;
+            display:block;
+            text-align: center;
+            width:200px;
+            background-color:#fff;
+            float:left;
+            background-image: -webkit-linear-gradient(top,#fff,#eee);
+            background-image:    -moz-linear-gradient(top,#fff,#eee);
+            background-image:         linear-gradient(top,#fff,#eee);
+            box-shadow:5px 5px 5px 0 #333;
+
+            -moz-transform: rotate(-7.5deg);
+            -ms-transform: rotate(-7.5deg);
+            -o-transform: rotate(-7.5deg);
+            transform: rotate(-7.5deg);
+        }
+        #info{
+            display:block;
+            height:160px;
+            margin:20px;
+            padding:20px;
+            width:660px;
+            background-color:rgba(255,255,255,0.5);
+            border-radius:12px;
+            float:left;
+        }
+        #badge{
+            background-color:#fff;
+            float:left;
+        }
+        #badge h2{
+            color:red;
+            margin:0;
+            font-size:40px;
+        }
+        #badge h3{
+            background-color:blue;
+            color:#fff;
+            margin:0;
+        }
+    </style>
+</head>
+<body>
+<div id="conference">
+    <section id="badge">
+        <h3>Hi, My Name Is</h3>
+        <h2>Barney</h2>
+    </section>
+    <section id="info">
+
+    </section>
+</div>
+</body>
+</html>
