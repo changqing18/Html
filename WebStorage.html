@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Storage</title>
+    <style type="text/css">
+        form ol{
+            list-style: none; margin:0; padding:0;
+        }
+        form li{
+            margin:0; padding:0;
+        }
+        form li label{display:block;}
+    </style>
+
+</head>
+<body>
+<div id="container">
+    <p><strong>Preferences</strong></p>
+    <form id="preferences" action="save_prefs" method="post" accept-charset="utf-8">
+        <fieldset id="colors" class="">
+            <legend>Colors</legend>
+            <ol>
+                <li>
+                    <label for="background_color">Background color</label>
+                    <input class="color" type="color" name="background_color" value="" id="background_color">
+                </li>
+                <li>
+                    <label for="text_color">Text color</label>
+                    <input class="color" type="color" name="text_color" value="" id="text_color">
+                </li>
+                <li>
+                    <label for="text_size">Text size</label>
+                    <select name="text_size" id="text_size">
+                        <option value="16">16px</option>
+                        <option value="20">20px</option>
+                        <option value="24">24px</option>
+                        <option value="32">32px</option>
+                    </select>
+                </li>
+            </ol>
+        </fieldset>
+        <input type="submit" value="Save changes">
+    </form>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+    var save_setting=function(){
+        localStorage.setItem("background_color", $("#background_color").val());
+        localStorage.setItem("text_color", $("#text_color").val());
+        localStorage.setItem("text_size", $("#text_size").val());
+        apply_preferences_to_page();
+    }
+    var load_settings=function(){
+        var bgcolor=localStorage.getItem("background_color");
+        var text_color=localStorage.getItem("text_color");
+        var text_size=localStorage.getItem("text_size");
+        apply_preferences_to_page();
+    }
+    var apply_preferences_to_page=function () {
+        $("body").css("backgroundColor", $("#background_color").val());
+        $("body").css("color", $("#text_color").val());
+        $("body").css("font_size", $("#text_size").val()+"px");
+    }
+    load_settings();
+    $('form#preferences').submit(function (event) {
+        event.preventDefault();
+        save_setting();
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IndexedDB</title>
+    <style type="text/css">
+        #container{
+            margin:0 auto;
+            width:80%;
+        }
+        #sidebar,#main{
+            display:block;
+            float:left;
+        }
+        #main{  width:80%;  }
+        #sidebar{  width:20%;  }
+        form ol{
+            list-style:none;
+            margin:0;
+            padding:0;
+        }
+        form li,#sidebar li{
+            margin:0;
+            padding:0;
+        }
+        form  li label{  display:block;  }
+        #note,#title{
+            border:1px solid #000;
+            font-size:20px;
+            width:100%;
+        }
+        #sidebar ul{
+            list-style: none;
+            padding:0;
+        }
+        #sidebar li{  cursor: hand; cursor:pointer;}
+        #title{  height:20px;}
+        #note{  height:80px;}
+    </style>
+</head>
+<body>
+<div id="container">
+    <section id="sidebar">
+        <input type="button" id="new_button" value="New note">
+        <input type="button" id="delete_all_button" value="Delete all">
+        <ul aria-live="polite" id="notes"></ul>
+    </section>
+    <section id="main" aria-live="polite">
+        <form>
+            <ol>
+                <li>
+                    <label for="title">Title</label>
+                    <input type="text" id="title">
+                </li>
+                <li>
+                    <label for="note">Note</label>
+                    <textarea id="note"></textarea>
+                </li>
+                <li>
+                    <input type="submit" id="save_button" value="Save">
+                    <input type="submit" id="delete_button" value="Delete">
+                </li>
+            </ol>
+        </form>
+    </section>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    var db=null;
+    window.indexedDB=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;
+    var connectToDB=function(){
+        var version=1;
+        var request=window.indexedDB.open("awesomenotes",version);
+        request.onupgradeneeded=function(event){
+            alert("unupgradeneeded fired");
+            var db=event.target.result;
+            db.createObjectStore("notes",{keyPath:"id",autoIncrement:true});
+        };
+        request.onsuccess=function(event){
+            db=event.target.result;
+            fetchNotes();
+        };
+        request.onerror=function(event){
+            alert(event.debug[1].message);
+        }
+    };
+    var fetchNotes=function(){
+        var keyRange,request,result,store,transaction;
+        transaction=db.transaction(["notes"],"readwrite");
+        store=transaction.objectStore("notes");
+
+        //从储存器中获取数据；
+        keyRange=IDBKeyRange.lowerBound(0);
+        request=store.openCursor(keyRange);
+        request.onsuccess=function (event) {
+            result=event.target.result;
+            if(result){
+                addToNotesList(result.key,result.value);
+                result.continue();
+            }
+        };
+        request.onerror=function(event){
+            alert("Unable to fetch records");
+        };
+    };
+
+
+    var getNote=function(id){
+        var request,store,transaction;
+        id=parseInt(id);
+
+        transaction=db.transaction(["notes"]);
+        store=transaction.objectStore("notes");
+        request=store.get(id);
+
+        request.onsuccess=function(event){
+            showNote(request.result);
+        };
+
+        request.onerror=function(error){
+            alert("Unable to fetch record"+id);
+        }
+    };
+
+    var addToNotesList=function(key,data){
+        var item=$("<li>");
+        var notes=$("#notes");
+
+        item.attr("data-id",key);
+        item.html(data.title);
+        notes.append(item);
+    };
+
+    var showNote=function(data){
+        var note=$("#note");
+        var title=$("#title");
+
+        title.val(data.title);
+        title.attr("data-id",data.id);
+        note.val(data.note);
+        $("#delete_button").show();
+    };
+
+    var newNote=function(){
+        var note=$("#note");
+        var title=$("#title");
+
+        $("#delete_button").hide();
+        title.removeAttr("data-id");
+        title.val();
+        note.val();
+    };
+
+    var insertNote=function(title,note){
+        var data,key
+
+        data={
+            "title":title,
+            "note":note,
+        };
+        var transaction=db.transaction(["notes"],"readwrite");
+        var store=transaction.objectStore("notes");
+        var request=store.put(data);
+        request.onsuccess=function(event){
+            key=request.result;
+            addToNotesList(key,data);
+            newNote();
+        };
+    };
+    var updateNote=function(id,title,note){
+        var data,request,store,transaction;
+        id=parseInt();
+        data={
+            "title":title,
+            "note":note,
+            "id":id
+        };
+        transaction=db.transaction=db.transaction(["notes"],"readwrite");
+        store=transaction.objectStore("notes");
+        request=store.put(data);
+        request.onsuccess=function(event){
+            $("#notes>li[data-id="+id+"]").html(title);
+        }
+    }
+
+    var deleteNote=function(id){
+        var request,store,transaction;
+        id=parseInt(id);
+        transaction=db.transaction(["notes"],"readwrite");
+        store=transaction.objectStore("notes");
+        request=store.delete(id);
+
+        request.onsuccess=function(event){
+            $("#notes>li[data-id"+id+"]").remove();
+            newNote();
+        };
+    };
+
+    var clearNotes=function(id){
+        var request,store,transaction;
+
+        transaction=db.transaction(["notes"],"readwrite");
+        store=transaction.objectStore("notes");
+        request=store.clear();
+        request.onsuccess=function(event){
+            $("#notes").empty();
+        };
+        request.onerror=function(event){
+            alert("Unable to clear things out.");
+        }
+    };
+
+
+
+
+
+    $("#save_button").click(function(evnet){
+        var id,note,title;
+
+        event.preventDefault();
+        note=$("#note");
+        title=$("#title");
+        id=title.attr("data-id");
+
+        if(id){
+            updateNote(id,title.val(),note.val());
+        }else{
+            insertNote(title.val(),note.val());
+        }
+    });
+
+    $("delete_button").click(function(event){
+        var title=$("#title");
+        event.preventDefault();
+        deleteNote(title.attr("data-id"));
+    });
+
+    $("#notes").click(function(event){
+        var element=$(event.target);
+        if(element.is('li')){
+            getNote(element.attr("data-id"));
+        }
+    });
+
+    $("#new_button").click(function(event){
+        newNote();
+    });
+
+    $("#delete_all_button").click(function(event){
+        clearNotes();
+    });
+
+    connectToDB();
+    newNote();
+</script>
+</body>
+</html>
