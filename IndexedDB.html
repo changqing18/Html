@@ -64,7 +64,7 @@
         </form>
     </section>
 </div>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
 <script>
     var db=null;
     window.indexedDB=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;
@@ -74,7 +74,7 @@
         request.onupgradeneeded=function(event){
             alert("unupgradeneeded fired");
             var db=event.target.result;
-            db.createObjectStore("notes",{keyPath:"id",autoIncrement:true});
+            db.createobjectStore("notes",{keyPath:"id",autoIncrement:true});
         };
         request.onsuccess=function(event){
             db=event.target.result;
@@ -82,8 +82,9 @@
         };
         request.onerror=function(event){
             alert(event.debug[1].message);
-        }
+        };
     };
+
     var fetchNotes=function(){
         var keyRange,request,result,store,transaction;
         transaction=db.transaction(["notes"],"readwrite");
@@ -104,7 +105,6 @@
         };
     };
 
-
     var getNote=function(id){
         var request,store,transaction;
         id=parseInt(id);
@@ -119,16 +119,7 @@
 
         request.onerror=function(error){
             alert("Unable to fetch record"+id);
-        }
-    };
-
-    var addToNotesList=function(key,data){
-        var item=$("<li>");
-        var notes=$("#notes");
-
-        item.attr("data-id",key);
-        item.html(data.title);
-        notes.append(item);
+        };
     };
 
     var showNote=function(data){
@@ -147,16 +138,16 @@
 
         $("#delete_button").hide();
         title.removeAttr("data-id");
-        title.val();
-        note.val();
+        title.val("");
+        note.val("");
     };
 
     var insertNote=function(title,note){
-        var data,key
+        var data,key;
 
         data={
             "title":title,
-            "note":note,
+            "note":note
         };
         var transaction=db.transaction(["notes"],"readwrite");
         var store=transaction.objectStore("notes");
@@ -167,9 +158,10 @@
             newNote();
         };
     };
+
     var updateNote=function(id,title,note){
         var data,request,store,transaction;
-        id=parseInt();
+        id=parseInt(id);
         data={
             "title":title,
             "note":note,
@@ -181,7 +173,7 @@
         request.onsuccess=function(event){
             $("#notes>li[data-id="+id+"]").html(title);
         }
-    }
+    };
 
     var deleteNote=function(id){
         var request,store,transaction;
@@ -210,9 +202,14 @@
         }
     };
 
+    var addToNotesList=function(key,data){
+        var item=$("<li>");
+        var notes=$("#notes");
 
-
-
+        item.attr("data-id",key);
+        item.html(data.title);
+        notes.append(item);
+    };
 
     $("#save_button").click(function(evnet){
         var id,note,title;
@@ -229,7 +226,7 @@
         }
     });
 
-    $("delete_button").click(function(event){
+    $("#delete_button").click(function(event){
         var title=$("#title");
         event.preventDefault();
         deleteNote(title.attr("data-id"));
