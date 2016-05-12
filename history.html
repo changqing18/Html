@@ -3,7 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>History</title>
-    <link rel="stylesheet" href="stylesheets/history.css">
+    <style type="text/css">
+        body{
+            width: 960px;
+            margin: 15px auto;
+        }
+
+        p{
+            margin: 0 0 20px 0;
+        }
+
+        p, li{
+            line-height: 20px;
+            font-family: Arial, "MS Trebuchet", sans-serif;
+        }
+
+        #header{
+            width: 100%;
+        }
+
+        #header > nav > ul, #footer > nav > ul{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #header > nav > ul > li, #footer > nav > ul > li{
+            padding:0;
+            margin: 0 20px 0 0;
+            display:inline;
+        }
+
+        #footer{
+            clear: both;
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <header id="header">
@@ -60,8 +96,68 @@
         </ul>
     </nav>
 </footer>
-
+</section>
 <script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
-<script src="javascripts/history.js"></script>
+<script>
+    document.createElement("header");
+    document.createElement("footer");
+    document.createElement("section");
+    document.createElement("aside");
+    document.createElement("article");
+    document.createElement("nav");
+
+    var configureTabSelection = function(){
+        $("#services, #about, #contact").hide().attr("aria-hidden", true);
+        $("#welcome").attr("aria-hidden",false);
+
+        $("nav ul").click(function(event){
+            var target = $(event.target);
+            if(target.is("a")){
+                event.preventDefault();
+                if ( $(target.attr("href")).attr("aria-hidden")){
+                    addTabToHistory(target);
+                    activateTab(target.attr("href"));
+                }
+            }
+        });
+    };
+
+    var activateTab = function(selector){
+        $("[aria-hidden=false]").hide().attr("aria-hidden", true);
+        $(selector).show().attr("aria-hidden", false);
+    };
+
+    var addTabToHistory = function(target){
+        var tab = target.attr("href");
+        var stateObject = {tab: tab};
+        window.history.pushState(stateObject, "", tab);
+    };
+
+    var configurePopState = function(){
+        window.onpopstate = function(event) {
+            if(event.state){
+                var tab = (event.state["tab"]);
+                activateTab(tab);
+            }
+        };
+    };
+
+
+    var activateDefaultTab = function(){
+        tab = window.location.hash || "#welcome";
+        activateTab(tab);
+        window.history.replaceState( {tab: tab}, "", tab);
+    };
+
+
+
+    var init = function(){
+        configureTabSelection();
+        configurePopState();
+        activateDefaultTab();
+    };
+
+    init();
+</script>
 </body>
 </html>
