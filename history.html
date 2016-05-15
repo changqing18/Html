@@ -96,7 +96,6 @@
         </ul>
     </nav>
 </footer>
-</section>
 <script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
 <script>
     document.createElement("header");
@@ -144,7 +143,7 @@
 
 
     var activateDefaultTab = function(){
-        tab = window.location.hash || "#welcome";
+        var tab = window.location.hash || "#welcome";
         activateTab(tab);
         window.history.replaceState( {tab: tab}, "", tab);
     };
