@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+    <link rel="stylesheet" href="stylesheets/WebSocket.css">
+</head>
+<body>
+<div id="chat_wrapper">
+    <h2>Awesome Help!</h2>
+    <form id="nick_form" action="#" method="post">
+        <p>
+            <label>Nickname
+                <input id="nickname" type="text" value="GuestUser">
+            </label>
+            <input type="submit" value="Change">
+        </p>
+    </form>
+    <div id="chat">connecting</div>
+    <form id="chat_form" action="#" method="post">
+        <p>
+            <label>Message
+                <input id="message" type="text">
+            </label>
+            <input type="submit" value="Send">
+        </p>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
+<script>
+    var setupChat=function() {
+        var webSocket = new WebSocket('ws://123.206.79.46:60001/');
+        webSocket.onopen = function (event) {
+            $('#chat').append('<br>Connected to the server');
+        };
+        webSocket.onmessage = function (event) {
+            $('#chat').append("<br>" + event.data);
+            $('#chat').animate({scrollTop: $('#chat').height()});
+        };
+        webSocket.onclose=function (evnet) {
+            $("#chat").append('<br>Connection closed');
+        };
+        $("form#chat_form").submit(function(e){
+            e.preventDefault();
+            var textfield=$("#message");
+            webSocket.send(textfield.val());
+            textfield.val("");
+        });
+        $("form#nick_form").submit(function(e){
+            e.preventDefault();
+            var textfield=$("#nickname");
+            var textfield=$("/nick"+textfield.val());
+        });
+    };
+    setupChat();
+</script>
+</body>
+</html>
