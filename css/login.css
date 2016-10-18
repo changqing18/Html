@@ -1,5 +1,5 @@
 p{
-    font-family: "Î¢ÈíÑÅºÚ", "ºÚÌå", "Arial";
+    font-family: "å¾®è½¯é›…é»‘", "é»‘ä½“", "Arial";
     font-size:200%;
     text-align: center;
 }
@@ -34,7 +34,7 @@ input:focus{background-color: #ffe;}
     float:left;
 }
 form{
-    font-family: "Î¢ÈíÑÅºÚ", "ºÚÌå", "Arial";
+    font-family: "å¾®è½¯é›…é»‘", "é»‘ä½“", "Arial";
     font-size:120%;
     width:450px;
     margin:80px auto;
@@ -46,7 +46,7 @@ form{
     width:300px;
     height:30px;
     font-size: 25px;
-    font-family: "Î¢ÈíÑÅºÚ", "ºÚÌå", "Arial";
+    font-family: "å¾®è½¯é›…é»‘", "é»‘ä½“", "Arial";
 }
 input,fieldset,legend{
     border-radius:6px;
